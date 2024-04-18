@@ -17,3 +17,9 @@ For so long, I've wanted to easily and conveniently listen to movie and TV show 
 ## Security :closed_lock_with_key:	
 All media files are securely stored in Google Cloud Storage with signed URLs to ensure that only authorized users can access the content.
 
+## Contribution
+Feel free to contribute to this project by submitting issues or pull requests for bugs and features.
+
+## License
+MIT License
+

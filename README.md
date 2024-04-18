@@ -1,5 +1,22 @@
-If you want to test on your local machine:
-- Assign your service account key to the GOOGLE_APPLICATION_CREDENTIALS env variable
+# Bootleg MP3 :notes: 
 
-If you want to run gcloud app deploy:
-- You need to be in bash. Google Cloud currently only in my bash
+## About :headphones:
+For so long, I've wanted to easily and conveniently listen to movie and TV show soundtracks. Spotify's library isn't diverse enough and the experience on YouTube isn't simple. The only solution? Create my own music player. 
+
+## How to Use
+1. Navigate to mp3.thebillyorr.com to access the music player.
+2. Browse through the collection of available soundtracks. Mostly Anime soundtracks :sweat_smile:
+3. Click on a track to start streaming the music right away.
+
+## Technologies Used
+- **Google Cloud Storage**: To store and serve audio files securely and efficiently.
+- **Google App Engine**: For hosting the web application.
+- **Node.js**: As the runtime environment for the server.
+- **Express.js**: To handle server-side routing.
+
+## Security
+All media files are securely stored in Google Cloud Storage with signed URLs to ensure that only authorized users can access the content.
+
+## Local Development
+To set up the project for local development:
+1. Clone the repository:

@@ -1,0 +1,11 @@
+runtime: nodejs20  # Specify the Node.js version
+env: standard      # Use the standard environment
+instance_class: F1 # Choose an instance class (F1 is the smallest)
+
+handlers:
+- url: /.*
+  script: auto  # Automatically route requests to your Node.js app
+
+automatic_scaling:
+  min_instances: 0  # Scale down to 0 instances when idle
+  max_instances: 5  # Scale up to 5 instances under load

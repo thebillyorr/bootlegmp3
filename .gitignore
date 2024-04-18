@@ -1,0 +1,7 @@
+node_modules/
+.env
+*.log
+# Service account for Google Cloud
+bootlegmp3-34b4d40d4292.json
+# Mac OS system files
+.DS_Store

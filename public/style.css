@@ -1,0 +1,65 @@
+.hidden {
+    display: none;
+}
+
+.container {
+}
+
+.album {
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.songs {
+    font-weight: normal;
+    list-style-type: none;
+    padding-left: 0;
+    display: flex; /* Use flexbox to layout song items horizontally */
+    flex-wrap: wrap; /* Allow song items to wrap as needed */
+    gap: 10px; /* Add space between items */
+    margin-left: 20px; /* Indent song list from the album title */
+}
+
+.songs li {
+    padding: 5px 10px;
+    white-space: nowrap;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    list-style-type: none;
+    margin: 5px;
+    background-color: white;
+    color: black;
+    transition: all 0.2s ease-in-out 0s;
+}
+
+.songs li:hover {
+    background-color: darkslategrey; /* Background color on hover */
+    color: white; /* Text color on hover */
+}
+
+button {
+    background-color: white; /* Green background */
+    border: none; /* Remove default border */
+    color: black; /* White text */
+    padding: 12px; /* Padding for a larger, more clickable area */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove default text decoration */
+    display: inline-block; /* Allow buttons to sit side by side */
+    font-size: 16px; /* Increase font size for readability */
+    margin: 4px 2px; /* Add some space around buttons */
+    cursor: pointer; /* Change cursor to indicate clickable */
+    border-radius: 5px; /* Rounded corners for a softer look */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for feedback */
+}
+
+button:hover {
+    background-color: darkslategrey; /* Background color on hover */
+    color: white; /* Text color on hover */
+    transform: scale(1.05); /* Slightly increase size on hover for feedback */
+}
+
+button:active {
+    transform: scale(0.95); /* Slightly decrease size when clicked */
+}

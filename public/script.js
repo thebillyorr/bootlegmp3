@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     aquatope: "The Aquatope on White Sand (白い砂のアクアトープ)",
     superstar: "Love Live! Superstar!! (スーパースター!!)",
     oneoff: "One Off",
-    apothecary: "The Apothecary Diaries (薬屋のひとりごと)"
+    apothecary: "The Apothecary Diaries (薬屋のひとりごと)",
+    yorukura: "Jellyfish Can't Swim in the Night (夜のクラゲは泳げない)"
     };
 
     // Fetch structured content from the server

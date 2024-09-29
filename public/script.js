@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isShuffle = false; 
 
     const albumMappings = {
-    kanojomokanojo: "カノジョも彼女",
-    lycorisrecoil: "リコリス・リコイル",
+    kanojomokanojo: "Kanojo Mo Kanojo (カノジョも彼女)",
+    lycorisrecoil: "Lycoris Recoil (リコリス・リコイル)",
     otonarinotenshi: "Angel Next Door (お隣の天使様)",
     akebichan: "Akebi-chan no Sailor-fuku (明日ちゃんのセーラー服)",
     bofuri: "Bofuri",
@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     oneoff: "One Off",
     apothecary: "The Apothecary Diaries (薬屋のひとりごと)",
     yorukura: "Jellyfish Can't Swim in the Night (夜のクラゲは泳げない)",
-    roshidere: "時々ボソッとロシア語でデレる隣のアーリャさん",
-    makeine: "負けヒロインが多すぎる"
+    roshidere: "Roshidere (時々ボソッとロシア語でデレる隣のアーリャさん)",
+    makeine: "Makeine (負けヒロインが多すぎる)"
     };
 
     // Fetch structured content from the server

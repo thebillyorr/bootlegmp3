@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     apothecary: "The Apothecary Diaries (薬屋のひとりごと)",
     yorukura: "Jellyfish Can't Swim in the Night (夜のクラゲは泳げない)",
     roshidere: "Roshidere (時々ボソッとロシア語でデレる隣のアーリャさん)",
-    makeine: "Makeine (負けヒロインが多すぎる)"
+    makeine: "Makeine (負けヒロインが多すぎる)",
+    lovelive: "Love Live! Extras (ラブライブ!)"
     };
 
     // Fetch structured content from the server

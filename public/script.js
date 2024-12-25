@@ -12,128 +12,120 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isShuffle = false;
 
     // -------------------------------------
-    // 1) ALBUM INFO: COVER, EN & JP NAMES
+    // 1) ALBUM INFO (No more coverUrl)
     // -------------------------------------
     const albumInfo = {
-  kanojomokanojo: {
-    englishName: "Kanojo mo Kanojo",
-    japaneseName: "カノジョも彼女",
-    coverUrl: "./covers/kanojomokanojo.jpg",
-  },
-  lycorisrecoil: {
-    englishName: "Lycoris Recoil",
-    japaneseName: "リコリス・リコイル",
-    coverUrl: "./covers/lycorisrecoil.jpeg",
-  },
-  otonarinotenshi: {
-    englishName: "The Angel Next Door",
-    japaneseName: "お隣の天使様",
-    coverUrl: "./covers/otonarinotenshi.png",
-  },
-  akebichan: {
-    englishName: "Akebi-chan no Sailor-fuku",
-    japaneseName: "明日ちゃんのセーラー服",
-    coverUrl: "./covers/akebichan.jpg",
-  },
-  gotoubun: {
-    englishName: "Quintessential Quintuplets",
-    japaneseName: "五等分の花嫁",
-    coverUrl: "./covers/gotoubun.jpg",
-  },
-  tadakoi: {
-    englishName: "Tada Never Falls in Love",
-    japaneseName: "多田くんは恋をしない",
-    coverUrl: "./covers/tadakoi.jpg",
-  },
-  fuukoi: {
-    englishName: "More than Married",
-    japaneseName: "夫婦以上、恋人未満",
-    coverUrl: "./covers/fuukoi.jpg",
-  },
-  aquatope: {
-    englishName: "The Aquatope on White Sand",
-    japaneseName: "白い砂のアクアトープ",
-    coverUrl: "./covers/aquatope.jpg",
-  },
-  superstar: {
-    englishName: "Love Live! Superstar!!",
-    japaneseName: "スーパースター!!",
-    coverUrl: "./covers/superstar.jpg",
-  },
-  oneoff: {
-    englishName: "One Off",
-    japaneseName: "",
-    coverUrl: "https://placehold.co/100x100?text=One+Off",
-  },
-  apothecary: {
-    englishName: "The Apothecary Diaries",
-    japaneseName: "薬屋のひとりごと",
-    coverUrl: "./covers/apothecary.jpg",
-  },
-  yorukura: {
-    englishName: "Jellyfish Can't Swim in the Night",
-    japaneseName: "夜のクラゲは泳げない",
-    coverUrl: "./covers/yorukura.jpeg",
-  },
-  roshidere: {
-    englishName: "Roshidere",
-    japaneseName: "時々ボソッとロシア語でデレる隣のアーリャさん",
-    coverUrl: "./covers/roshidere.jpeg",
-  },
-  makeine: {
-    englishName: "Makeine",
-    japaneseName: "負けヒロインが多すぎる",
-    coverUrl: "./covers/makeine.jpg",
-  },
-  lovelive: {
-    englishName: "Love Live! Extras",
-    japaneseName: "ラブライブ!",
-    coverUrl: "./covers/lovelive.jpg",
-  },
-  aonohako: {
-    englishName: "Blue Box",
-    japaneseName: "アオのハコ",
-    coverUrl: "./covers/aonohako.jpg",
-  },
-   mamahaha: {
-    englishName: "Mamahaha",
-    japaneseName: "継母の連れ子が元カノだった",
-    coverUrl: "./covers/mamahaha.jpeg",
-  }
+      kanojomokanojo: {
+        englishName: "Kanojo mo Kanojo",
+        japaneseName: "カノジョも彼女",
+      },
+      lycorisrecoil: {
+        englishName: "Lycoris Recoil",
+        japaneseName: "リコリス・リコイル",
+      },
+      otonarinotenshi: {
+        englishName: "The Angel Next Door",
+        japaneseName: "お隣の天使様",
+      },
+      akebichan: {
+        englishName: "Akebi-chan no Sailor-fuku",
+        japaneseName: "明日ちゃんのセーラー服",
+      },
+      gotoubun: {
+        englishName: "Quintessential Quintuplets",
+        japaneseName: "五等分の花嫁",
+      },
+      tadakoi: {
+        englishName: "Tada Never Falls in Love",
+        japaneseName: "多田くんは恋をしない",
+      },
+      fuukoi: {
+        englishName: "More than Married",
+        japaneseName: "夫婦以上、恋人未満",
+      },
+      aquatope: {
+        englishName: "The Aquatope on White Sand",
+        japaneseName: "白い砂のアクアトープ",
+      },
+      superstar: {
+        englishName: "Love Live! Superstar!!",
+        japaneseName: "スーパースター!!",
+      },
+      oneoff: {
+        englishName: "One Off",
+        japaneseName: "",
+      },
+      apothecary: {
+        englishName: "The Apothecary Diaries",
+        japaneseName: "薬屋のひとりごと",
+      },
+      yorukura: {
+        englishName: "Jellyfish Can't Swim in the Night",
+        japaneseName: "夜のクラゲは泳げない",
+      },
+      roshidere: {
+        englishName: "Roshidere",
+        japaneseName: "時々ボソッとロシア語でデレる隣のアーリャさん",
+      },
+      makeine: {
+        englishName: "Makeine",
+        japaneseName: "負けヒロインが多すぎる",
+      },
+      lovelive: {
+        englishName: "Love Live! Extras",
+        japaneseName: "ラブライブ!",
+      },
+      aonohako: {
+        englishName: "Blue Box",
+        japaneseName: "アオのハコ",
+      },
+      mamahaha: {
+        englishName: "Mamahaha",
+        japaneseName: "継母の連れ子が元カノだった",
+      }
+    };
 
-};
-
-    // Used if album key not found in albumInfo
+    // If not found in albumInfo, fallback:
     function formatAlbumName(folder) {
-      // Just return the folder string if we have no info
       return { 
         englishName: folder, 
-        japaneseName: "", 
-        coverUrl: "https://placehold.co/100x100?text=No+Cover"
+        japaneseName: "" 
       };
     }
 
     // -------------------------------------
-    // 2) FETCH SONGS FROM SERVER
+    // 2) HELPER: Compute GCS Cover URL
+    // -------------------------------------
+    // We'll assume all images are .jpeg. If some are .jpg or .png, adjust accordingly.
+    const baseCoverURL = "https://storage.googleapis.com/bootlegmp3bucket/albumCovers/";
+
+    function getCoverUrl(folderName) {
+      return `${baseCoverURL}${folderName}.jpeg`;
+    }
+
+    // -------------------------------------
+    // 3) FETCH SONGS FROM SERVER
     // -------------------------------------
     const response = await fetch('/api/songs');
     const folders = await response.json();
     console.log(folders);
 
     // -------------------------------------
-    // 3) HELPER FUNCTIONS
+    // 4) HELPER FUNCTIONS
     // -------------------------------------
     const playNextSong = () => {
         if (isShuffle) {
             currentSongIndex = Math.floor(Math.random() * (folders[currentAlbumIndex].songs.length - 2));
             currentAlbumIndex = Math.floor(Math.random() * folders.length);
         } else {
-            if (currentSongIndex === folders[currentAlbumIndex].songs.length - 2) {  
+            if (currentSongIndex === folders[currentAlbumIndex].songs.length - 2) {
                 currentSongIndex = 0;
                 if (currentAlbumIndex >= folders.length - 1) {
                     currentAlbumIndex = 0;
                 } else currentAlbumIndex += 1;
-            } else currentSongIndex += 1;
+            } else {
+                currentSongIndex += 1;
+            }
         }
         playSong();
     };
@@ -144,11 +136,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentAudioPlayer.pause();
         }
 
-        // +1 because the first element is your metadata
+        // +1 because the first element is metadata
         const albumName = folders[currentAlbumIndex].folder;
         const song = folders[currentAlbumIndex].songs[currentSongIndex + 1];
 
-        // Show what's playing
+        // Display what's playing
         const { englishName, japaneseName } = albumInfo[albumName] || formatAlbumName(albumName);
         currentSongDisplay.innerHTML = `<strong>${englishName} ${japaneseName ? `(${japaneseName})` : ""}</strong> - ${song.name}`;
 
@@ -160,7 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     // -------------------------------------
-    // 4) EVENT LISTENERS FOR SHUFFLE/PLAY/NEXT
+    // 5) EVENT LISTENERS FOR SHUFFLE/PLAY/NEXT
     // -------------------------------------
     shuffleButton.addEventListener('click', () => {
         isShuffle = !isShuffle;
@@ -178,57 +170,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     nextButton.addEventListener('click', playNextSong);
 
     // -------------------------------------
-    // 5) RENDER ALBUMS
+    // 6) RENDER ALBUMS
     // -------------------------------------
     folders.forEach(({ folder, songs }, folderIndex) => {
         // Create a clickable header for the album
         const albumDiv = document.createElement('div');
         albumDiv.classList.add('album');
 
-        // We'll display the English name (and JP name in parentheses) for the heading
+        // Display the English + Japanese name in the heading
         const albumData = albumInfo[folder] || formatAlbumName(folder);
-        albumDiv.textContent = albumData.englishName + (albumData.japaneseName ? ` (${albumData.japaneseName})` : "");
+        albumDiv.textContent = albumData.englishName + (
+          albumData.japaneseName ? ` (${albumData.japaneseName})` : ""
+        );
 
-        // Create the hidden content container
+        // Create a hidden container for album details
         const albumContentDiv = document.createElement('div');
         albumContentDiv.classList.add('album-content');
-        albumContentDiv.style.display = 'none'; // hidden by default
+        albumContentDiv.style.display = 'none';
 
-        // LEFT SIDE: cover + english name + jp name
+        // LEFT SIDE: cover + metadata
         const leftSideDiv = document.createElement('div');
         leftSideDiv.classList.add('album-left');
 
-        // Cover image
+        // Dynamically computed cover image
         const coverImg = document.createElement('img');
-        coverImg.src = albumData.coverUrl;
+        coverImg.src = getCoverUrl(folder);
         coverImg.alt = albumData.englishName;
         coverImg.classList.add('album-cover');
         leftSideDiv.appendChild(coverImg);
 
-        // Titles container
+        // Titles
         const titlesDiv = document.createElement('div');
         titlesDiv.classList.add('album-titles');
-        // English name
         const englishTitle = document.createElement('h4');
         englishTitle.textContent = albumData.englishName || folder;
-        // Japanese name
         const japaneseTitle = document.createElement('p');
         japaneseTitle.textContent = albumData.japaneseName || "";
-        
+
         titlesDiv.appendChild(englishTitle);
         if (albumData.japaneseName) {
           titlesDiv.appendChild(japaneseTitle);
         }
         leftSideDiv.appendChild(titlesDiv);
 
-        // RIGHT SIDE: songs
+        // RIGHT SIDE: songs list
         const rightSideDiv = document.createElement('div');
         rightSideDiv.classList.add('album-right');
 
         const songsList = document.createElement('ul');
         songsList.classList.add('songs');
 
-        // skip the first element
+        // skip first element in each songs array (metadata)
         songs.slice(1).forEach(({ name }, songIndex) => {
             const songItem = document.createElement('li');
             songItem.textContent = name;
@@ -246,16 +238,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         albumContentDiv.appendChild(leftSideDiv);
         albumContentDiv.appendChild(rightSideDiv);
 
-        // Toggle the details on albumDiv click
+        // Toggle display on albumDiv click
         albumDiv.addEventListener('click', () => {
-            if (albumContentDiv.style.display === 'none') {
-                albumContentDiv.style.display = 'flex';
-            } else {
-                albumContentDiv.style.display = 'none';
-            }
+            albumContentDiv.style.display =
+              albumContentDiv.style.display === 'none' ? 'flex' : 'none';
         });
 
-        // Append to the container
+        // Append to container
         songsContainer.appendChild(albumDiv);
         songsContainer.appendChild(albumContentDiv);
     });

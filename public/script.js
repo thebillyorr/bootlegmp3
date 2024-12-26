@@ -11,36 +11,95 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentSongIndex = -1;
     let isShuffle = false;
 
-    // 1) Fetch album titles from GCS
-    let albumInfo = {};
-    try {
-        const metaResponse = await fetch('https://storage.googleapis.com/bootlegmp3bucket/albumTitles.json');
-        albumInfo = await metaResponse.json();
-        console.log('Fetched albumInfo:', albumInfo);
-    } catch (err) {
-        console.error('Failed to load album metadata:', err);
-    }
+    // Hardcoded album info
+    const albumInfo = {
+        kanojomokanojo: {
+            englishName: "Kanojo mo Kanojo",
+            japaneseName: "カノジョも彼女",
+        },
+        lycorisrecoil: {
+            englishName: "Lycoris Recoil",
+            japaneseName: "リコリス・リコイル",
+        },
+        otonarinotenshi: {
+            englishName: "The Angel Next Door",
+            japaneseName: "お隣の天使様",
+        },
+        akebichan: {
+            englishName: "Akebi-chan no Sailor-fuku",
+            japaneseName: "明日ちゃんのセーラー服",
+        },
+        gotoubun: {
+            englishName: "Quintessential Quintuplets",
+            japaneseName: "五等分の花嫁",
+        },
+        tadakoi: {
+            englishName: "Tada Never Falls in Love",
+            japaneseName: "多田くんは恋をしない",
+        },
+        fuukoi: {
+            englishName: "More than Married",
+            japaneseName: "夫婦以上、恋人未満",
+        },
+        aquatope: {
+            englishName: "The Aquatope on White Sand",
+            japaneseName: "白い砂のアクアトープ",
+        },
+        superstar: {
+            englishName: "Love Live! Superstar!!",
+            japaneseName: "スーパースター!!",
+        },
+        oneoff: {
+            englishName: "One Off",
+            japaneseName: "",
+        },
+        apothecary: {
+            englishName: "The Apothecary Diaries",
+            japaneseName: "薬屋のひとりごと",
+        },
+        yorukura: {
+            englishName: "Jellyfish Can't Swim in the Night",
+            japaneseName: "夜のクラゲは泳げない",
+        },
+        roshidere: {
+            englishName: "Roshidere",
+            japaneseName: "時々ボソッとロシア語でデレる隣のアーリャさん",
+        },
+        makeine: {
+            englishName: "Makeine",
+            japaneseName: "負けヒロインが多すぎる",
+        },
+        lovelive: {
+            englishName: "Love Live! Extras",
+            japaneseName: "ラブライブ!",
+        },
+        aonohako: {
+            englishName: "Blue Box",
+            japaneseName: "アオのハコ",
+        },
+        mamahaha: {
+            englishName: "Mamahaha",
+            japaneseName: "継母の連れ子が元カノだった",
+        }
+    };
 
-    // Fallback if album isn't found in albumInfo
     function formatAlbumName(folder) {
-      return { 
-        englishName: folder,
-        japaneseName: ""
-      };
+        return { 
+            englishName: folder, 
+            japaneseName: "" 
+        };
     }
 
-    // 2) Helper: Compute the cover URL (assuming .jpeg)
     const baseCoverURL = "https://storage.googleapis.com/bootlegmp3bucket/albumCovers/";
+
     function getCoverUrl(folderName) {
-      return `${baseCoverURL}${folderName}.jpeg`;
+        return `${baseCoverURL}${folderName}.jpeg`;
     }
 
-    // 3) Fetch songs from the server
     const response = await fetch('/api/songs');
     const folders = await response.json();
-    console.log('Fetched folders:', folders);
+    console.log(folders);
 
-    // 4) Playback-related helper functions
     const playNextSong = () => {
         if (isShuffle) {
             currentSongIndex = Math.floor(Math.random() * (folders[currentAlbumIndex].songs.length - 2));
@@ -64,7 +123,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentAudioPlayer.pause();
         }
 
-        // +1 because the first element is metadata
         const albumName = folders[currentAlbumIndex].folder;
         const song = folders[currentAlbumIndex].songs[currentSongIndex + 1];
 
@@ -77,7 +135,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentAudioPlayer.addEventListener('ended', playNextSong);
     };
 
-    // 5) Event listeners for shuffle, play/pause, next
     shuffleButton.addEventListener('click', () => {
         isShuffle = !isShuffle;
         shuffleButton.textContent = `Shuffle: ${isShuffle ? 'On' : 'Off'}`;
@@ -93,21 +150,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     nextButton.addEventListener('click', playNextSong);
 
-    // 6) Render each album
     folders.forEach(({ folder, songs }, folderIndex) => {
         const albumDiv = document.createElement('div');
         albumDiv.classList.add('album');
 
-        // Use albumInfo or fallback
         const albumData = albumInfo[folder] || formatAlbumName(folder);
         albumDiv.textContent = albumData.englishName + (albumData.japaneseName ? ` (${albumData.japaneseName})` : "");
 
-        // Hidden content container
         const albumContentDiv = document.createElement('div');
         albumContentDiv.classList.add('album-content');
         albumContentDiv.style.display = 'none';
 
-        // Left side: cover + titles
         const leftSideDiv = document.createElement('div');
         leftSideDiv.classList.add('album-left');
 
@@ -128,14 +181,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (albumData.japaneseName) titlesDiv.appendChild(japaneseTitle);
         leftSideDiv.appendChild(titlesDiv);
 
-        // Right side: songs list
         const rightSideDiv = document.createElement('div');
         rightSideDiv.classList.add('album-right');
 
         const songsList = document.createElement('ul');
         songsList.classList.add('songs');
 
-        // skip the first element in songs (metadata)
         songs.slice(1).forEach(({ name }, songIndex) => {
             const songItem = document.createElement('li');
             songItem.textContent = name;
@@ -149,13 +200,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         rightSideDiv.appendChild(songsList);
 
-        // Combine left + right
         albumContentDiv.appendChild(leftSideDiv);
         albumContentDiv.appendChild(rightSideDiv);
 
-        // Toggle details on albumDiv click
         albumDiv.addEventListener('click', () => {
-            albumContentDiv.style.display = (albumContentDiv.style.display === 'none') ? 'flex' : 'none';
+            albumContentDiv.style.display =
+              albumContentDiv.style.display === 'none' ? 'flex' : 'none';
         });
 
         songsContainer.appendChild(albumDiv);

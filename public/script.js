@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         },
         ririsa: {
             englishName: "2.5 Dimensional",
-            japaneseName: "2.5次元の誘惑",
+            japaneseName: "2.5 次元の誘惑",
         }
     };
 

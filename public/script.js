@@ -80,6 +80,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         mamahaha: {
             englishName: "Mamahaha",
             japaneseName: "継母の連れ子が元カノだった",
+        },
+        ririsa: {
+            englishName: "2.5 Dimensional",
+            japaneseName: "2.5次元の誘惑",
         }
     };
 

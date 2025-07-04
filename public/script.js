@@ -84,6 +84,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         ririsa: {
             englishName: "2.5 Dimensional",
             japaneseName: "2.5 次元の誘惑",
+        },
+        amagami: {
+            englishName: "Tying the Knot",
+            japaneseName: "甘神さんちの縁結び",
+        },
+        hyakkano: {
+            englishName: "Hyakkano",
+            japaneseName: "君のことが大大大大大好きな100人の彼女",
+        },
+        medalist: {
+            englishName: "Medalist",
+            japaneseName: "メダリスト",
         }
     };
 

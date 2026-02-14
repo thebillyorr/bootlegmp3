@@ -3,30 +3,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bootleg MP3 Player 3.0</title>
-    <link rel="stylesheet" href="/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootleg MP3 v4.0</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="../favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <!-- HEADER START -->
-    <div class="header-container">
-      <h1>Bootleg MP3 Player 3.0</h1>
+    <main class="layout-grid">
+        <!-- LEFT COLUMN: LIBRARY INDEX -->
+        <section id="library-view" class="panel library-panel">
+            <header class="library-header">
+                <h1>BOOTLEG MP3</h1>
+                <div class="subtitle">ARCHIVE v4.0</div>
+            </header>
+            <ul id="album-list">
+                <!-- Javascript populates this list -->
+            </ul>
+        </section>
 
-      <!-- Current song display -->
-      <div id="currentSongDisplay">No song playing</div>
+        <!-- RIGHT COLUMN: ALBUM DETAIL -->
+        <section id="detail-view" class="panel detail-panel" hidden>
+            <button id="mobile-back-btn" class="text-btn mobile-only">[← BACK]</button>
+            <div id="album-content">
+                <div class="empty-state">SELECT AN ALBUM TO VIEW CONTENTS</div>
+            </div>
+        </section>
+    </main>
 
-      <!-- Player controls -->
-      <div class="controls">
-        <button id="playPauseButton">Play/Pause</button>
-        <button id="shuffleButton">Shuffle: Off</button>
-        <button id="nextButton">Next</button>
-        <audio id="audioPlayer" controls hidden></audio>
-      </div>
-    </div>
-    <!-- HEADER END -->
-
-    <!-- The rest of your page... -->
-    <div id="container"></div>
+    <!-- BOTTOM BAR: PLAYER -->
+    <footer id="player-bar">
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="controls-wrapper">
+            <div class="track-info" id="currentSongDisplay">IDLE</div>
+            
+            <div class="buttons">
+                <button id="shuffleButton" class="control-btn">[SHUFFLE: OFF]</button>
+                <button id="playPauseButton" class="control-btn">[PLAY]</button>
+                <button id="nextButton" class="control-btn">[NEXT]</button>
+            </div>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const detailViewEl = document.getElementById('detail-view');
     const albumContentEl = document.getElementById('album-content');
     const currentSongDisplay = document.getElementById('currentSongDisplay');
-    
+
     // Controls
     const playPauseButton = document.getElementById('playPauseButton');
     const shuffleButton = document.getElementById('shuffleButton');
@@ -15,13 +15,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mobileBackBtn = document.getElementById('mobile-back-btn');
 
     // State
-    let currentAudioPlayer = new Audio(); // Initialize mostly empty audio object
+    const currentAudioPlayer = new Audio();
     let currentAlbumIndex = -1;
     let currentSongIndex = -1;
     let isShuffle = false;
-    let folders = []; // Will hold fetched data
+    let albums = []; // [{ folder, cover, tracks: [{ name, path }] }]
+    let playToken = 0; // guards against out-of-order async play requests
 
-    // Hardcoded album info (Same as before)
+    // Hardcoded album display info (English / Japanese names)
     const albumInfo = {
         kanojomokanojo: { englishName: "Kanojo mo Kanojo", japaneseName: "カノジョも彼女" },
         lycorisrecoil: { englishName: "Lycoris Recoil", japaneseName: "リコリス・リコイル" },
@@ -47,15 +48,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         kaoruhana: { englishName: "Fragrant Flower", japaneseName: "薫る花は凛と咲く" }
     };
 
-    const baseCoverURL = "https://storage.googleapis.com/bootlegmp3bucket/albumCovers/";
-
     // Helpers
     function getDisplayInfo(folderName) {
         return albumInfo[folderName] || { englishName: folderName, japaneseName: "" };
-    }
-
-    function getCoverUrl(folderName) {
-        return `${baseCoverURL}${folderName}.jpeg`;
     }
 
     function updateProgressBar() {
@@ -65,22 +60,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    async function fetchTrackUrl(path) {
+        const res = await fetch(`/api/track?path=${encodeURIComponent(path)}`);
+        if (!res.ok) throw new Error('Failed to sign track');
+        const { url } = await res.json();
+        return url;
+    }
+
     function renderLibrary() {
-        albumListEl.innerHTML = ''; // clear
-        folders.forEach((folderData, index) => {
-            const { folder } = folderData;
-            const info = getDisplayInfo(folder);
-            
+        albumListEl.innerHTML = '';
+        albums.forEach((album, index) => {
+            const info = getDisplayInfo(album.folder);
+
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${info.englishName.toUpperCase()}</span>
                 <span class="subtitle">${info.japaneseName}</span>
             `;
             li.addEventListener('click', () => {
-                // Highlight active item
                 document.querySelectorAll('#album-list li').forEach(el => el.classList.remove('active'));
                 li.classList.add('active');
-                
                 openAlbumDetail(index);
             });
             albumListEl.appendChild(li);
@@ -88,22 +87,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function openAlbumDetail(index) {
-        const folderData = folders[index];
-        const { folder, songs } = folderData;
-        const info = getDisplayInfo(folder);
-        
-        // Show detail view (essential for mobile to slide in)
+        const album = albums[index];
+        const info = getDisplayInfo(album.folder);
+
         detailViewEl.classList.add('open');
         detailViewEl.hidden = false;
 
-        // Render Header
         albumContentEl.innerHTML = `
             <div class="album-header-large">
-                <img src="${getCoverUrl(folder)}" alt="Cover" class="album-cover-stamp" onerror="this.style.display='none'">
+                <img src="${album.cover}" alt="Cover" class="album-cover-stamp" onerror="this.style.display='none'">
                 <div class="album-info-text">
                     <h2>${info.englishName}</h2>
                     <p>${info.japaneseName}</p>
-                    <p>${songs.length - 1} TRACKS</p>
+                    <p>${album.tracks.length} TRACKS</p>
                 </div>
             </div>
             <div class="tracklist" id="tracklist-container"></div>
@@ -111,95 +107,80 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const tracklistContainer = document.getElementById('tracklist-container');
 
-        // Render Tracks (Skipping first item if it's the folder itself, based on original logic)
-        // Original logic used slice(1), assuming index 0 is folder metadata or empty
-        songs.slice(1).forEach((song, songIndex) => {
+        album.tracks.forEach((song, songIndex) => {
             const row = document.createElement('div');
             row.className = 'track-item';
-            
-            // Pad number with leading zero
             const trackNum = (songIndex + 1).toString().padStart(2, '0');
-            
             row.innerHTML = `
                 <div class="track-number">${trackNum}</div>
                 <div class="track-name">${song.name}</div>
             `;
-            
             row.addEventListener('click', () => {
                 currentAlbumIndex = index;
-                currentSongIndex = songIndex; // The slice(1) offset logic is handled in playSong
+                currentSongIndex = songIndex;
                 playSong();
             });
-            
             tracklistContainer.appendChild(row);
         });
     }
 
-    // Player Logic
-    const playSong = () => {
+    // Player Logic — signs the URL on demand, right before playing.
+    const playSong = async () => {
         if (currentAlbumIndex === -1) return;
-        
-        // Validate index
-        const album = folders[currentAlbumIndex];
-        // Note: sliced logic. Actual array index = currentSongIndex + 1
-        // because we skipped the first item in the UI list
-        const actualIndex = currentSongIndex + 1;
-        
-        if (actualIndex >= album.songs.length) return;
-        
-        const songPtr = album.songs[actualIndex];
+        const album = albums[currentAlbumIndex];
+        if (!album || currentSongIndex < 0 || currentSongIndex >= album.tracks.length) return;
+
+        const track = album.tracks[currentSongIndex];
         const info = getDisplayInfo(album.folder);
 
-        // Update Text
-        currentSongDisplay.textContent = `${info.englishName.toUpperCase()} - ${songPtr.name}`;
-        playPauseButton.textContent = "[PAUSE]";
+        const token = ++playToken;
+        currentSongDisplay.textContent = `${info.englishName.toUpperCase()} - ${track.name}`;
+        playPauseButton.textContent = "[...]";
 
-        // Audio Source
-        currentAudioPlayer.src = songPtr.url;
-        currentAudioPlayer.play();
-        
-        // Setup listeners for this new source
-        currentAudioPlayer.ontimeupdate = updateProgressBar;
-        currentAudioPlayer.onended = playNextSong;
+        try {
+            const url = await fetchTrackUrl(track.path);
+            if (token !== playToken) return; // a newer play request superseded this one
+
+            currentAudioPlayer.src = url;
+            await currentAudioPlayer.play();
+            playPauseButton.textContent = "[PAUSE]";
+
+            currentAudioPlayer.ontimeupdate = updateProgressBar;
+            currentAudioPlayer.onended = playNextSong;
+        } catch (err) {
+            console.error('Playback failed', err);
+            if (token === playToken) {
+                currentSongDisplay.textContent = "ERROR LOADING TRACK";
+                playPauseButton.textContent = "[PLAY]";
+            }
+        }
     };
 
     const playNextSong = () => {
-        if (!folders.length) return;
+        if (!albums.length || currentAlbumIndex === -1) return;
+        const trackCount = albums[currentAlbumIndex].tracks.length;
 
         if (isShuffle) {
-            // Random Album
-            currentAlbumIndex = Math.floor(Math.random() * folders.length);
-            // Random Song in that album (account for +1 offset)
-            const albumLen = folders[currentAlbumIndex].songs.length;
-            currentSongIndex = Math.floor(Math.random() * (albumLen - 1)); 
+            currentAlbumIndex = Math.floor(Math.random() * albums.length);
+            const len = albums[currentAlbumIndex].tracks.length;
+            currentSongIndex = Math.floor(Math.random() * len);
+        } else if (currentSongIndex >= trackCount - 1) {
+            // End of album -> first track of the next album (loop at the end)
+            currentSongIndex = 0;
+            currentAlbumIndex = (currentAlbumIndex + 1) % albums.length;
         } else {
-            // Linear
-            const albumLen = folders[currentAlbumIndex].songs.length;
-            // currentSongIndex corresponds to the UI list index (0-based relative to slice)
-            // The real array length is albumLen. 
-            // The UI list has (albumLen - 1) items.
-            // If we are at the last song:
-            if (currentSongIndex >= albumLen - 2) {
-                // Next album
-                currentSongIndex = 0;
-                if (currentAlbumIndex >= folders.length - 1) {
-                    currentAlbumIndex = 0; // Loop back to start
-                } else {
-                    currentAlbumIndex++;
-                }
-            } else {
-                currentSongIndex++;
-            }
+            currentSongIndex++;
         }
         playSong();
     };
 
     // Event Listeners
     playPauseButton.addEventListener('click', () => {
-        if (currentAudioPlayer.paused && currentAudioPlayer.src) {
+        if (!currentAudioPlayer.src) return;
+        if (currentAudioPlayer.paused) {
             currentAudioPlayer.play();
             playPauseButton.textContent = "[PAUSE]";
-        } else if (currentAudioPlayer.src) {
+        } else {
             currentAudioPlayer.pause();
             playPauseButton.textContent = "[PLAY]";
         }
@@ -212,26 +193,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     nextButton.addEventListener('click', playNextSong);
 
-    // Progress Bar Seek
     progressContainer.addEventListener('click', (e) => {
-        if (!currentAudioPlayer.src) return;
+        if (!currentAudioPlayer.src || !currentAudioPlayer.duration) return;
         const rect = progressContainer.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        const percentage = clickX / width;
+        const percentage = (e.clientX - rect.left) / rect.width;
         currentAudioPlayer.currentTime = percentage * currentAudioPlayer.duration;
     });
 
-    // Mobile Navigation
     mobileBackBtn.addEventListener('click', () => {
         detailViewEl.classList.remove('open');
-        // setTimeout(() => detailViewEl.hidden = true, 300); // Optional wait for transition
     });
 
     // Initial Load
     try {
-        const response = await fetch('/api/songs');
-        folders = await response.json();
+        const response = await fetch('/api/albums');
+        albums = await response.json();
         renderLibrary();
     } catch (err) {
         console.error("Failed to load library", err);

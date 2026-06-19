@@ -2,12 +2,16 @@
 /*       RESET & TYPOGRAPHY       */
 /* ------------------------------- */
 :root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --border-color: #000000;
-  --hover-bg: #000000;
-  --hover-text: #ffffff;
-  --font-stack: "Courier New", Courier, monospace;
+  /* Borrowed from the on blank space palette: warm paper + ink, sage accent. */
+  --bg-color: #f7f5f0;       /* paper */
+  --text-color: #2b2a27;     /* ink */
+  --border-color: #2b2a27;   /* ink, for structural borders */
+  --line-color: #e3dfd5;     /* soft separators */
+  --accent: #7c8b73;         /* sage */
+  --accent-deep: #5f6e57;
+  --hover-bg: #7c8b73;       /* sage selection instead of stark black */
+  --hover-text: #f7f5f0;
+  --font-stack: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
 }
 
 * {
@@ -71,6 +75,22 @@ ul {
   padding-bottom: 16px;
 }
 
+.lab-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: var(--accent-deep);
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.lab-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 .library-header h1 {
   font-size: 1.2rem;
   margin: 0;
@@ -85,7 +105,7 @@ ul {
 /* Album List Items */
 #album-list li {
   padding: 12px 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--line-color);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   font-size: 14px;
@@ -155,7 +175,7 @@ ul {
 
 .track-item {
   padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--line-color);
   cursor: pointer;
   display: flex;
   gap: 16px;
@@ -195,14 +215,14 @@ ul {
 .progress-container {
   width: 100%;
   height: 4px; /* Thin clickable area */
-  background: #eee;
+  background: var(--line-color);
   cursor: pointer;
   position: relative;
 }
 
 .progress-bar {
   height: 100%;
-  background: var(--text-color);
+  background: var(--accent); /* sage accent */
   width: 0%;
   transition: width 0.1s linear;
 }

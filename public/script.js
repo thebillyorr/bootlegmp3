@@ -135,7 +135,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const token = ++playToken;
         currentSongDisplay.textContent = `${info.englishName.toUpperCase()} - ${track.name}`;
-        playPauseButton.textContent = "[...]";
 
         try {
             const url = await fetchTrackUrl(track.path);
@@ -143,15 +142,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             currentAudioPlayer.src = url;
             await currentAudioPlayer.play();
-            playPauseButton.textContent = "[PAUSE]";
-
-            currentAudioPlayer.ontimeupdate = updateProgressBar;
-            currentAudioPlayer.onended = playNextSong;
+            // The [PLAY] / [PAUSE] label is driven by the audio element's own
+            // 'playing' / 'pause' events (wired once below), so it flips straight
+            // from [PLAY] to [PAUSE] when sound actually starts — no [...] state.
         } catch (err) {
             console.error('Playback failed', err);
             if (token === playToken) {
                 currentSongDisplay.textContent = "ERROR LOADING TRACK";
-                playPauseButton.textContent = "[PLAY]";
             }
         }
     };
@@ -179,10 +176,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!currentAudioPlayer.src) return;
         if (currentAudioPlayer.paused) {
             currentAudioPlayer.play();
-            playPauseButton.textContent = "[PAUSE]";
         } else {
             currentAudioPlayer.pause();
-            playPauseButton.textContent = "[PLAY]";
         }
     });
 
@@ -192,6 +187,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     nextButton.addEventListener('click', playNextSong);
+
+    // The play/pause label and progress bar reflect the audio element's real
+    // state, which keeps the [PLAY] -> [PAUSE] transition clean and direct.
+    currentAudioPlayer.addEventListener('playing', () => { playPauseButton.textContent = "[PAUSE]"; });
+    currentAudioPlayer.addEventListener('pause', () => { playPauseButton.textContent = "[PLAY]"; });
+    currentAudioPlayer.addEventListener('timeupdate', updateProgressBar);
+    currentAudioPlayer.addEventListener('ended', playNextSong);
 
     progressContainer.addEventListener('click', (e) => {
         if (!currentAudioPlayer.src || !currentAudioPlayer.duration) return;
